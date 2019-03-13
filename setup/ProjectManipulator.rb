@@ -1,7 +1,6 @@
-require 'xcodeproj'
+require "xcodeproj"
 
 module Pod
-
   class ProjectManipulator
     attr_reader :configurator, :xcodeproj_path, :platform, :remove_demo_target, :string_replacements, :prefix
 
@@ -23,7 +22,7 @@ module Pod
         "TODAYS_DATE" => @configurator.date,
         "TODAYS_YEAR" => @configurator.year,
         "PROJECT" => @configurator.pod_name,
-        "CPD" => @prefix
+        "CPD" => @prefix,
       }
       replace_internal_project_settings
 
@@ -38,7 +37,7 @@ module Pod
 
     def add_podspec_metadata
       project_metadata_item = @project.root_object.main_group.children.select { |group| group.name == "Podspec Metadata" }.first
-      project_metadata_item.new_file "../" + @configurator.pod_name  + ".podspec"
+      project_metadata_item.new_file "../" + @configurator.pod_name + ".podspec"
       project_metadata_item.new_file "../README.md"
       project_metadata_item.new_file "../LICENSE"
     end
@@ -90,10 +89,10 @@ RUBY
     def rename_files
       # shared schemes have project specific names
       scheme_path = project_folder + "/PROJECT.xcodeproj/xcshareddata/xcschemes/"
-      File.rename(scheme_path + "PROJECT.xcscheme", scheme_path +  @configurator.pod_name + "-Example.xcscheme")
+      File.rename(scheme_path + "PROJECT.xcscheme", scheme_path + @configurator.pod_name + "-Example.xcscheme")
 
       # rename xcproject
-      File.rename(project_folder + "/PROJECT.xcodeproj", project_folder + "/" +  @configurator.pod_name + ".xcodeproj")
+      File.rename(project_folder + "/PROJECT.xcodeproj", project_folder + "/" + @configurator.pod_name + ".xcodeproj")
 
       unless @remove_demo_target
         # change app file prefixes
@@ -114,7 +113,6 @@ RUBY
           File.rename before, after
         end
       end
-
     end
 
     def rename_project_folder
@@ -129,13 +127,11 @@ RUBY
         text = File.read(name)
 
         for find, replace in @string_replacements
-            text = text.gsub(find, replace)
+          text = text.gsub(find, replace)
         end
 
         File.open(name, "w") { |file| file.puts text }
       end
     end
-
   end
-
 end
